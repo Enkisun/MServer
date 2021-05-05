@@ -1,9 +1,8 @@
 const { Schema, model } = require("mongoose");
 
-const categorySchema = new Schema({
-  id: { type: Schema.Types.ObjectId, required: true, unique: true },
-  name: { type: String },
-  emoji: { type: String },
+const schema = new Schema({
+  name: { type: String, require: true },
+  emoji: { type: String, default: "💰" },
 });
 
-module.exports = model("Category", categorySchema);
+module.exports = model("Category", schema);

@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const { check } = require("express-validator");
 const mongoose = require("mongoose");
 const cfg = require("./config");
 const loginController = require("./controllers/login");
@@ -11,19 +10,13 @@ const app = express();
 
 mongoose.set("useFindAndModify", false);
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(cors());
 
-app
-  .route("/register")
-  .post(registerController.register, [
-    check("email", "Некорректный email").isEmail(),
-  ]);
+app.route("/register").post(registerController.register);
 
-app
-  .route("/login")
-  .post(loginController.login, [
-    check("email", "Введите корректный email").normalizeEmail().isEmail(),
-  ]);
+app.route("/login").post(loginController.login);
 
 app
   .route("/categories")

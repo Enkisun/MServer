@@ -11,19 +11,14 @@ module.exports = {
     });
   },
   addCategory: async (req, res) => {
-    const { category, emoji } = req.query;
+    const { category, emoji } = req.body;
 
-    Category.findOneAndUpdate(
-      { name: category, emoji },
-      { $addToSet: update },
-      { upsert: true },
-      (error, categories) => {
-        if (error) {
-          return res.status(400).json({ message: error.message });
-        }
-
-        res.json({ categories });
+    Category.create({ name: category, emoji }, (error, categories) => {
+      if (error) {
+        return res.status(400).json({ message: error.message });
       }
-    );
+
+      res.json({ categories });
+    });
   },
 };
