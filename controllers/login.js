@@ -5,7 +5,7 @@ const User = require("../models/User");
 
 module.exports = {
   login: [
-    check("email", "Введите корректный email").normalizeEmail().isEmail(),
+    check("email", "Please enter a valid email").normalizeEmail().isEmail(),
     async (req, res) => {
       try {
         const errors = validationResult(req);
@@ -13,7 +13,7 @@ module.exports = {
         if (!errors.isEmpty()) {
           return res.status(400).json({
             errors: errors.array(),
-            message: "Некорректные данные при входе в систему",
+            message: "Incorrect login data",
           });
         }
 
@@ -22,7 +22,7 @@ module.exports = {
         const user = await User.findOne({ email });
 
         if (!user) {
-          return res.status(400).json({ message: "Пользователь не найден" });
+          return res.status(400).json({ message: "User is not found" });
         }
 
         const token = jwt.sign({ userId: user._id }, cfg.jwtSecret, {
@@ -33,7 +33,7 @@ module.exports = {
       } catch (e) {
         res
           .status(500)
-          .json({ message: "Что-то пошло не так, попробуйте снова" });
+          .json({ message: "Something went wrong, please try again" });
       }
     },
   ],

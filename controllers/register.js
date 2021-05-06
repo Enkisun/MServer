@@ -6,7 +6,7 @@ const ExpenseSpace = require("../models/ExpenseSpace");
 
 module.exports = {
   register: [
-    check("email", "Некорректный email").isEmail(),
+    check("email", "Incorrect email").isEmail(),
     async (req, res) => {
       try {
         const errors = validationResult(req);
@@ -14,7 +14,7 @@ module.exports = {
         if (!errors.isEmpty()) {
           return res.status(400).json({
             errors: errors.array(),
-            message: "Некорректные данные при регистрации",
+            message: "Incorrect registration data",
           });
         }
 
@@ -23,9 +23,7 @@ module.exports = {
         const candidate = await User.findOne({ email });
 
         if (candidate) {
-          return res
-            .status(400)
-            .json({ message: "Такой пользователь уже существует" });
+          return res.status(400).json({ message: "This user already exists" });
         }
 
         const user = new User({ email });
@@ -45,11 +43,11 @@ module.exports = {
 
         res
           .status(201)
-          .json({ token, user, expenseSpace, message: "Пользователь создан" });
+          .json({ token, user, expenseSpace, message: "User created" });
       } catch (e) {
         res
           .status(500)
-          .json({ message: "Что-то пошло не так, попробуйте снова" });
+          .json({ message: "Something went wrong, please try again" });
       }
     },
   ],

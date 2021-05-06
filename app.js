@@ -5,6 +5,7 @@ const cfg = require("./config");
 const loginController = require("./controllers/login");
 const registerController = require("./controllers/register");
 const categoriesController = require("./controllers/categories");
+const expenseController = require("./controllers/expenses");
 
 const app = express();
 
@@ -19,9 +20,16 @@ app.route("/register").post(registerController.register);
 app.route("/login").post(loginController.login);
 
 app
+  .route("/expenses")
+  .get(expenseController.getExpenses)
+  .post(expenseController.addExpense)
+  .put(expenseController.changeExpense);
+
+app
   .route("/categories")
   .get(categoriesController.getCategories)
-  .post(categoriesController.addCategory);
+  .post(categoriesController.addCategory)
+  .put(categoriesController.changeCategory);
 
 async function start() {
   try {
