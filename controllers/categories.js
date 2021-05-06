@@ -3,13 +3,17 @@ const ExpenseSpace = require("../models/ExpenseSpace");
 
 module.exports = {
   getCategories: (req, res) => {
-    Category.find({}).exec((error, categories) => {
-      if (error) {
-        res.status(400).json({ message: e.message });
-      }
+    const { expenseSpaceId } = req.query;
 
-      res.json({ categories });
-    });
+    ExpenseSpace.find({ _id: expenseSpaceId })
+      .populate("categories")
+      .exec((error, result) => {
+        if (error) {
+          return res.status(400).json({ message: e.message });
+        }
+
+        res.json(result[0].categories);
+      });
   },
   addCategory: async (req, res) => {
     const { category, emoji, expenseSpaceId } = req.body;

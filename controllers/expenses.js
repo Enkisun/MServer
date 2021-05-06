@@ -4,7 +4,7 @@ const Category = require("../models/Category");
 
 module.exports = {
   getExpenses: (req, res) => {
-    const { from, to } = req.query;
+    const { from, to, expenseSpaceId } = req.query;
 
     let query = {};
 
@@ -15,13 +15,20 @@ module.exports = {
       query = { $gte: new Date().getMonth(), $lte: new Date() };
     }
 
-    Expense.find({ createdAt: query }).exec((error, expenses) => {
-      if (error) {
-        res.status(400).json({ message: error.message });
-      } else {
-        res.json(expenses);
-      }
-    });
+    ExpenseSpace.find({ _id: expenseSpaceId })
+      .populate({
+        path: "expenses",
+        match: {
+          createdAt: query,
+        },
+      })
+      .exec((error, result) => {
+        if (error) {
+          return res.status(400).json({ message: e.message });
+        }
+
+        res.json(result[0].expenses);
+      });
   },
   addExpense: async (req, res) => {
     const { author, amount, category, expenseSpaceId } = req.body;
