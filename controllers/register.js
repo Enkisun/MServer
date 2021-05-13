@@ -41,9 +41,7 @@ module.exports = {
           expiresIn: "365d",
         });
 
-        res
-          .status(201)
-          .json({ token, user, expenseSpace, message: "User created" });
+        res.status(201).json({ token, user, message: "User created" });
       } catch (e) {
         res
           .status(500)

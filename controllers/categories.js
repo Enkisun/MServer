@@ -2,8 +2,16 @@ const Category = require("../models/Category");
 const ExpenseSpace = require("../models/ExpenseSpace");
 
 module.exports = {
-  getCategories: (req, res) => {
-    const { expenseSpaceId } = req.query;
+  getCategories: async (req, res) => {
+    const { expenseSpaceId, email } = req.query;
+
+    const user = await User.findOne({ email });
+
+    if (expenseSpaceId !== `${user.expenseSpace}`) {
+      return res.status(400).json({
+        message: "User does not have enough rights in this space of expenses",
+      });
+    }
 
     ExpenseSpace.find({ _id: expenseSpaceId })
       .populate("categories")
@@ -16,7 +24,15 @@ module.exports = {
       });
   },
   addCategory: async (req, res) => {
-    const { category, emoji, expenseSpaceId } = req.body;
+    const { category, emoji, expenseSpaceId, email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (expenseSpaceId !== `${user.expenseSpace}`) {
+      return res.status(400).json({
+        message: "User does not have enough rights in this space of expenses",
+      });
+    }
 
     const newCategory = new Category({
       name: category,
@@ -41,8 +57,16 @@ module.exports = {
       res.json({ result, message: `New category added successfully` });
     });
   },
-  changeCategory: (req, res) => {
-    const { category, emoji, id } = req.body;
+  changeCategory: async (req, res) => {
+    const { category, emoji, id, email, expenseSpaceId } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (expenseSpaceId !== `${user.expenseSpace}`) {
+      return res.status(400).json({
+        message: "User does not have enough rights in this space of expenses",
+      });
+    }
 
     const update = { name: category, emoji };
 

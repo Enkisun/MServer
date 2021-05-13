@@ -1,10 +1,19 @@
 const ExpenseSpace = require("../models/ExpenseSpace");
 const Expense = require("../models/Expense");
 const Category = require("../models/Category");
+const User = require("../models/User");
 
 module.exports = {
-  getExpenses: (req, res) => {
-    const { from, to, expenseSpaceId } = req.query;
+  getExpenses: async (req, res) => {
+    const { from, to, expenseSpaceId, email } = req.query;
+
+    const user = await User.findOne({ email });
+
+    if (expenseSpaceId !== `${user.expenseSpace}`) {
+      return res.status(400).json({
+        message: "User does not have enough rights in this space of expenses",
+      });
+    }
 
     let query = {};
 
@@ -31,7 +40,15 @@ module.exports = {
       });
   },
   addExpense: async (req, res) => {
-    const { author, amount, category, expenseSpaceId } = req.body;
+    const { amount, category, expenseSpaceId, email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (expenseSpaceId !== `${user.expenseSpace}`) {
+      return res.status(400).json({
+        message: "User does not have enough rights in this space of expenses",
+      });
+    }
 
     const newCategory = await Category.findOneAndUpdate(
       { name: category },
@@ -39,13 +56,13 @@ module.exports = {
       { setDefaultsOnInsert: true, new: true, upsert: true },
       (error) => {
         if (error) {
-          res.status(400).json({ message: error.message });
+          return res.status(400).json({ message: error.message });
         }
       }
     );
 
     const newExpense = new Expense({
-      author,
+      author: user.name,
       amount,
       categoryId: newCategory._id,
     });
@@ -68,10 +85,18 @@ module.exports = {
       res.json({ result, message: `New expense added successfully` });
     });
   },
-  changeExpense: (req, res) => {
-    const { id, author, amount, categoryId } = req.body;
+  changeExpense: async (req, res) => {
+    const { id, amount, categoryId, email, expenseSpaceId } = req.body;
 
-    const update = { author, amount, categoryId };
+    const user = await User.findOne({ email });
+
+    if (expenseSpaceId !== `${user.expenseSpace}`) {
+      return res.status(400).json({
+        message: "User does not have enough rights in this space of expenses",
+      });
+    }
+
+    const update = { author: user.name, amount, categoryId };
 
     for (let prop in update) {
       if (!update[prop]) {

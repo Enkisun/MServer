@@ -5,7 +5,9 @@ const cfg = require("./config");
 const loginController = require("./controllers/login");
 const registerController = require("./controllers/register");
 const categoriesController = require("./controllers/categories");
-const expenseController = require("./controllers/expenses");
+const expensesController = require("./controllers/expenses");
+const dormantsController = require("./controllers/dormants");
+const collaboratorsController = require("./controllers/collaborators");
 
 const app = express();
 
@@ -20,10 +22,17 @@ app.route("/register").post(registerController.register);
 app.route("/login").post(loginController.login);
 
 app
+  .route("/dormants")
+  .post(dormantsController.addDormant)
+  .delete(dormantsController.deleteDormant);
+
+app.route("/collaborators").post(collaboratorsController.addCollaborator);
+
+app
   .route("/expenses")
-  .get(expenseController.getExpenses)
-  .post(expenseController.addExpense)
-  .put(expenseController.changeExpense);
+  .get(expensesController.getExpenses)
+  .post(expensesController.addExpense)
+  .put(expensesController.changeExpense);
 
 app
   .route("/categories")
