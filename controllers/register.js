@@ -1,5 +1,6 @@
 const { check, validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const cfg = require("../config");
 const User = require("../models/User");
 const ExpenseSpace = require("../models/ExpenseSpace");
@@ -7,6 +8,9 @@ const ExpenseSpace = require("../models/ExpenseSpace");
 module.exports = {
   register: [
     check("email", "Incorrect email").isEmail(),
+    check("password", "Password length at least 6 characters").isLength({
+      min: 6,
+    }),
     async (req, res) => {
       try {
         const errors = validationResult(req);
@@ -18,15 +22,17 @@ module.exports = {
           });
         }
 
-        const { email } = req.body;
+        const { email, password } = req.body;
 
         const candidate = await User.findOne({ email });
 
         if (candidate) {
-          return res.status(400).json({ message: "This user already exists" });
+          return res.status(400).json({ message: "This user already exist" });
         }
 
-        const user = new User({ email });
+        const hashedPassword = await bcrypt.hash(password, 12);
+
+        const user = new User({ email, password: hashedPassword });
 
         const expenseSpace = new ExpenseSpace({
           name: `${user.name}Space`,
@@ -41,7 +47,7 @@ module.exports = {
           expiresIn: "365d",
         });
 
-        res.status(201).json({ token, user, message: "User created" });
+        res.status(201).json({ token, user });
       } catch (e) {
         res
           .status(500)

@@ -31,7 +31,10 @@ module.exports = {
 
     await ExpenseSpace.updateOne(
       { _id: expenseSpaceId },
-      { $addToSet: { collaborators: user._id }, $pull: { dormants: user._id } },
+      {
+        $addToSet: { collaborators: user._id },
+        $pull: { invitations: user._id },
+      },
       { safe: true, multi: true },
       (error, result) => {
         if (error) {

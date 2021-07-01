@@ -2,7 +2,7 @@ const ExpenseSpace = require("../models/ExpenseSpace");
 const User = require("../models/User");
 
 module.exports = {
-  addDormant: async (req, res) => {
+  addInvitation: async (req, res) => {
     const { email, expenseSpaceId } = req.body;
 
     const user = await User.findOne({ email });
@@ -13,17 +13,20 @@ module.exports = {
 
     ExpenseSpace.updateOne(
       { _id: expenseSpaceId },
-      { $addToSet: { dormants: user._id } },
+      { $addToSet: { invitations: user._id } },
       (error, result) => {
         if (error) {
           return res.status(400).json({ message: error.message });
         }
 
-        res.json({ result, message: `User added to dormants successfully` });
+        res.json({
+          result,
+          message: `User was successfully added to the invitees`,
+        });
       }
     );
   },
-  deleteDormant: async (req, res) => {
+  deleteInvitation: async (req, res) => {
     const { email, expenseSpaceId } = req.query;
 
     const user = await User.findOne({ email });
@@ -34,7 +37,7 @@ module.exports = {
 
     ExpenseSpace.updateOne(
       { _id: expenseSpaceId },
-      { $pull: { dormants: user._id } },
+      { $pull: { invitations: user._id } },
       { safe: true, multi: true },
       (error) => {
         if (error) {
