@@ -7,9 +7,6 @@ const User = require("../models/User");
 module.exports = {
   login: [
     check("email", "Please enter a valid email").normalizeEmail().isEmail(),
-    check("password", "Password length at least 6 characters").isLength({
-      min: 6,
-    }),
     async (req, res) => {
       try {
         const errors = validationResult(req);
@@ -36,7 +33,7 @@ module.exports = {
             expiresIn: "365d",
           });
 
-          res.status(200).json({ user, token });
+          res.status(200).json({ user: user.name, token });
         } else {
           res.status(400).json({ message: "Invalid login or password" });
         }
