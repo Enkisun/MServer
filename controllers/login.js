@@ -33,7 +33,9 @@ module.exports = {
             expiresIn: "365d",
           });
 
-          res.status(200).json({ user: user.name, token });
+          res
+            .status(200)
+            .json({ user: { name: user.name, id: user._id }, token });
         } else {
           res.status(400).json({ message: "Invalid login or password" });
         }
