@@ -3,7 +3,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const cfg = require("../config");
 const User = require("../models/User");
-const ExpenseSpace = require("../models/ExpenseSpace");
+const Space = require("../models/Space");
+const Category = require("../models/Category");
 
 module.exports = {
   register: [
@@ -34,12 +35,20 @@ module.exports = {
 
         const user = new User({ email, password: hashedPassword });
 
-        const expenseSpace = new ExpenseSpace({
+        const space = new Space({
           name: `${user.name}Space`,
           collaborators: user._id,
         });
 
-        user.expenseSpace = (await expenseSpace.save())._id;
+        await Category.create([
+          { name: "Food" },
+          { name: "Transport" },
+          { name: "Sport" },
+        ]).then((categories) => {
+          space.categories = categories.map((item) => item._id);
+        });
+
+        user.space = (await space.save())._id;
 
         await user.save();
 
@@ -47,9 +56,14 @@ module.exports = {
           expiresIn: "365d",
         });
 
-        res
-          .status(201)
-          .json({ user: { name: user.name, id: user._id }, token });
+        res.status(201).json({
+          user: {
+            name: user.name,
+            id: user._id,
+            spaceId: user.space,
+          },
+          token,
+        });
       } catch (e) {
         res
           .status(500)

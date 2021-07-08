@@ -3,17 +3,17 @@ const { Schema, model } = require("mongoose");
 const schema = new Schema(
   {
     description: String,
-    author: { type: String, required: true },
+    authorId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     amount: { type: Number, required: true },
+    date: { type: Date, required: true },
+    note: String,
     categoryId: {
       type: Schema.Types.ObjectId,
       ref: "Category",
       required: true,
     },
   },
-  {
-    timestamps: true,
-  }
+  { versionKey: false }
 );
 
-module.exports = model("Expense", schema);
+module.exports = model("Transaction", schema);

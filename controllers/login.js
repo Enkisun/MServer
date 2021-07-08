@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const cfg = require("../config");
 const User = require("../models/User");
+const Space = require("../models/Space");
 
 module.exports = {
   login: [
@@ -33,9 +34,14 @@ module.exports = {
             expiresIn: "365d",
           });
 
-          res
-            .status(200)
-            .json({ user: { name: user.name, id: user._id }, token });
+          res.status(200).json({
+            user: {
+              name: user.name,
+              id: user._id,
+              spaceId: user.space,
+            },
+            token,
+          });
         } else {
           res.status(400).json({ message: "Invalid login or password" });
         }

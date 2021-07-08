@@ -1,9 +1,9 @@
-const ExpenseSpace = require("../models/ExpenseSpace");
+const Space = require("../models/Space");
 const User = require("../models/User");
 
 module.exports = {
   addInvitation: async (req, res) => {
-    const { email, expenseSpaceId } = req.body;
+    const { email, spaceId } = req.body;
 
     const user = await User.findOne({ email });
 
@@ -11,8 +11,8 @@ module.exports = {
       return res.status(400).json({ message: "User is not found" });
     }
 
-    ExpenseSpace.updateOne(
-      { _id: expenseSpaceId },
+    Space.updateOne(
+      { _id: spaceId },
       { $addToSet: { invitations: user._id } },
       (error, result) => {
         if (error) {
@@ -27,7 +27,7 @@ module.exports = {
     );
   },
   deleteInvitation: async (req, res) => {
-    const { email, expenseSpaceId } = req.query;
+    const { email, spaceId } = req.query;
 
     const user = await User.findOne({ email });
 
@@ -35,8 +35,8 @@ module.exports = {
       return res.status(400).json({ message: "User is not found" });
     }
 
-    ExpenseSpace.updateOne(
-      { _id: expenseSpaceId },
+    Space.updateOne(
+      { _id: spaceId },
       { $pull: { invitations: user._id } },
       { safe: true, multi: true },
       (error) => {

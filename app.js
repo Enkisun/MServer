@@ -5,7 +5,7 @@ const cfg = require("./config");
 const loginController = require("./controllers/login");
 const registerController = require("./controllers/register");
 const categoriesController = require("./controllers/categories");
-const expensesController = require("./controllers/expenses");
+const transactionsController = require("./controllers/transactions");
 const invitationsController = require("./controllers/invitations");
 const collaboratorsController = require("./controllers/collaborators");
 
@@ -29,10 +29,10 @@ app
 app.route("/collaborators").post(collaboratorsController.addCollaborator);
 
 app
-  .route("/expenses")
-  .get(expensesController.getExpenses)
-  .post(expensesController.addExpense)
-  .put(expensesController.changeExpense);
+  .route("/transactions")
+  .get(transactionsController.getExpenses)
+  .post(transactionsController.addExpense)
+  .put(transactionsController.changeExpense);
 
 app
   .route("/categories")
