@@ -30,7 +30,7 @@ module.exports = {
 
     const user = await User.findOne({ _id: id });
 
-    if (spaceId !== `${user.Space}`) {
+    if (spaceId !== `${user.space}`) {
       return res.status(400).json({
         message:
           "User does not have enough rights in this space of transactions",
@@ -65,7 +65,7 @@ module.exports = {
 
     const user = await User.findOne({ _id: id });
 
-    if (spaceId !== `${user.Space}`) {
+    if (spaceId !== `${user.space}`) {
       return res.status(400).json({
         message:
           "User does not have enough rights in this space of transactions",

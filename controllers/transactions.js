@@ -31,6 +31,7 @@ module.exports = {
         match: {
           date: query,
         },
+        options: { sort: { date: -1 } },
       })
       .exec((error, result) => {
         if (error) {
