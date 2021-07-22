@@ -42,7 +42,7 @@ module.exports = {
       });
   },
   addExpense: async (req, res) => {
-    const { amount, category, date, note, spaceId, id } = req.body;
+    const { amount, categoryId, date, note, spaceId, id } = req.body;
 
     const user = await User.findOne({ _id: id });
 
@@ -53,23 +53,12 @@ module.exports = {
       });
     }
 
-    const newCategory = await Category.findOneAndUpdate(
-      { name: category },
-      {},
-      { setDefaultsOnInsert: true, new: true, upsert: true },
-      (error) => {
-        if (error) {
-          return res.status(400).json({ message: error.message });
-        }
-      }
-    );
-
     const newExpense = new Transaction({
       authorId: user._id,
       amount,
       date,
       note,
-      categoryId: newCategory._id,
+      categoryId,
     });
 
     Space.updateOne(
@@ -77,7 +66,6 @@ module.exports = {
       {
         $addToSet: {
           transactions: newExpense._id,
-          categories: newCategory._id,
         },
       },
       (error) => {
