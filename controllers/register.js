@@ -41,9 +41,9 @@ module.exports = {
         });
 
         await Category.create([
-          { name: "Food" },
-          { name: "Transport" },
-          { name: "Sport" },
+          { name: "Food", emoji: "Fastfood" },
+          { name: "Transport", emoji: "DriveEta" },
+          { name: "Sport", emoji: "SportsSoccer" },
         ]).then((categories) => {
           space.categories = categories.map((item) => item._id);
         });

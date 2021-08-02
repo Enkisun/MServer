@@ -6,9 +6,9 @@ const schema = new Schema(
       type: String,
       require: true,
     },
-    emoji: { type: String, default: "💰" },
+    emoji: String,
   },
-  { versionKey: false }
+  { versionKey: false, timestamps: true }
 );
 
 module.exports = model("Category", schema);

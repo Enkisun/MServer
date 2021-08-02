@@ -42,7 +42,7 @@ module.exports = {
       });
   },
   addExpense: async (req, res) => {
-    const { amount, categoryId, date, note, spaceId, id } = req.body;
+    const { amount, date, note, categoryId, spaceId, id } = req.body;
 
     const user = await User.findOne({ _id: id });
 
